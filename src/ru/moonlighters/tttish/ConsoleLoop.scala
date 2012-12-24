@@ -2,16 +2,14 @@ package ru.moonlighters.tttish
 
 object ConsoleLoop {
   def run() {
-    Iterator continually(prompt) map(_.trim) filterNot(_.isEmpty) foreach(
-      _ match {
+    Iterator continually(prompt) map { _.trim } filterNot {_.isEmpty} foreach { _ match {
         case "help" => println(helpText)
         case "exit" => return
         case x => println("Unknown command: '%s'. Seriously, type help if not sure." format x)
-      }
-    )
+    }}
   }
 
-  def prompt:String = {
+  def prompt: String = {
     Console.print(promptText)
     Console.readLine()
   }
