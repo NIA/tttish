@@ -6,6 +6,7 @@ import org.scala_tools.time.Imports._
 
 object UpdatesController {
   def showUpdates() {
+    println()
     for(u <- Remote.getUpdates) {
       displayUpdate(u)
     }
