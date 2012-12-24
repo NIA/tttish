@@ -2,10 +2,14 @@ package ru.moonlighters.ttt
 
 import java.util.Date
 import net.liftweb.json._
+import org.scala_tools.time.Imports._
 
 object Remote {
   case class User(nickname: String, name: String)
-  case class Update(humanMessage: String, user: User, startedAt: Date, finishedAt: Option[Date], hours: Option[Double])
+  case class Update(humanMessage: String, user: User, startedAt: Date, finishedAt: Option[Date], hours: Option[Double], kind: Symbol) {
+    def startedAtDt = new DateTime(startedAt)
+    def finishedAtDt = finishedAt map { new DateTime(_) }
+  }
 
   def getUpdates = {
     val json = parse(load) transform {
@@ -23,6 +27,20 @@ object Remote {
   def load = {
     """
       |[
+      |  {
+      |    "human_message":"Test message",
+      |    "finished_at":null,
+      |    "kind":"status",
+      |    "uuid":"a4494860-4dc4-11e2-82b0-fefd6d4acbac",
+      |    "updated_at":"2012-12-24T19:22:53+07:00",
+      |    "user":{
+      |      "name":"Tester by NIA",
+      |      "created_at":"2012-12-24T19:20:36+07:00",
+      |      "nickname":"tester"
+      |    },
+      |    "started_at":"2012-12-24T19:22:53+07:00",
+      |    "hours":null
+      |  },
       |  {
       |    "human_message":"#tttish ",
       |    "finished_at":null,
