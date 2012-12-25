@@ -4,14 +4,18 @@ object ConsoleLoop {
   def run() {
     Iterator continually(prompt) map { _.trim } filterNot {_.isEmpty} foreach { input =>
       // Allow writing only beginning of command, e.g. "up" for "updates", "h" for "help" etc.
-      commandsList find { _.startsWith(input) } match {
-        case Some(cmd) => cmd match {
+      commandsList filter { _.startsWith(input) } match {
+        case Seq(cmd) => cmd match {
           case "help" => println(helpText)
           case "exit" => return
           case "updates" => UpdatesController.showUpdates()
-          case x => println("Sorry, command '%s' is not yet implemented :(" format x)
+          case x => println(s"Sorry, command '$input' is not yet implemented :(")
         }
-        case None => println("Unknown command: '%s'. Seriously, type help if not sure." format input)
+        case Seq() =>
+          println(s"Unknown command: '$input'. Seriously, type help if not sure.")
+        case Seq(cmds @ _*) =>
+          val candidates = cmds.mkString("'", "', '", "'")
+          println(s"Ambiguous command: '$input'. Possible candidates: $candidates.")
       }
     }
   }
