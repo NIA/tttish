@@ -9,13 +9,13 @@ object ConsoleLoop {
           case "help" => println(helpText)
           case "exit" => return
           case "updates" => UpdatesController.showUpdates()
-          case x => println(s"Sorry, command '$input' is not yet implemented :(")
+          case x => println("Sorry, command '%s' is not yet implemented :(" format input)
         }
         case Seq() =>
-          println(s"Unknown command: '$input'. Seriously, type help if not sure.")
+          println("Unknown command: '%s'. Seriously, type help if not sure." format input)
         case Seq(cmds @ _*) =>
           val candidates = cmds.mkString("'", "', '", "'")
-          println(s"Ambiguous command: '$input'. Possible candidates: $candidates.")
+          println("Ambiguous command: '%s'. Possible candidates: %s." format input, candidates)
       }
     }
   }
