@@ -9,7 +9,7 @@ object ConsoleLoop {
     try {
       Iterator continually(prompt) map { _.trim } filterNot {_.isEmpty} foreach { input =>
         val (cmdLike, args) = input.split("\\s+", 2) match {
-          case Array(x) => (x, null)
+          case Array(x) => (x, "")
           case Array(x, y) => (x, y)
         }
         // Allows writing only beginning of command, e.g. "up" for "updates", "h" for "help" etc.
@@ -39,6 +39,9 @@ object ConsoleLoop {
 
   // TODO: move commands to the right place
   private val commands: Map[String, Command] = ListMap(
+    "login" -> Command("set current user api key: login <key>", { key =>
+      AccountController.login(key)
+    }),
     "updates" -> Command("show the last updates", { _ =>
       UpdatesController.showUpdates()
     }),

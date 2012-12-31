@@ -4,12 +4,26 @@ import ru.moonlighters.ttt.Remote
 import java.util.Date
 import org.scala_tools.time.Imports._
 
-object UpdatesController {
+object UpdatesController extends Controller {
   def showUpdates() {
     println()
-    for(u <- Remote.getUpdates) {
-      displayUpdate(u)
+    print("Loading...")
+    val updatesPromise = Remote.getUpdates
+
+    // If successful
+    for (updates <- updatesPromise.right) {
+      println()
+      for(u <- updates) displayUpdate(u)
+      println()
     }
+
+    // If failed
+    for (error <- updatesPromise.left) {
+      println("Failed to fetch updates: " + error.getMessage)
+    }
+
+    // Display waiting process
+    displayProgress(updatesPromise)
   }
 
   def displayUpdate(u: Remote.Update) {
@@ -31,9 +45,9 @@ object UpdatesController {
       case 'update => " - " + endTime + hours
       case _ => ""
     }
+    println()
     println(startDate.capitalize + " " + startTime + suffix)
     println("@" + u.user.nickname + ": " + u.humanMessage)
-    println()
   }
 
   val dateFormat = "dd.MM.yyyy"
