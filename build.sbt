@@ -1,3 +1,5 @@
+import AssemblyKeys._
+
 name := "tttish"
 
 version := "0.1"
@@ -12,3 +14,5 @@ libraryDependencies += "net.liftweb"  % "lift-json_2.9.1"    % "2.4"
 
 libraryDependencies += "org.scalaj"  %% "scalaj-time"  % "0.6"
 
+
+assemblySettings

@@ -8,7 +8,9 @@ Build
 
 1. Install [SBT], a build tool for Scala
 2. Run `sbt` from the root folder of the project (the folder where this file is)
-3. Type `compile` to fetch dependencies and compile, `run` to run. That's all!
+3. Type `compile` to fetch dependencies and compile, `run` to run.
+4. Type `assembly` to create portable jar including all dependencies in folder `target`
+    * :warning: This jar may have really big size of some dozens of megabytes.
 
 Configure SBT-IDEA integration
 ------------------------------
@@ -16,10 +18,11 @@ Configure SBT-IDEA integration
 If SBT cmdline is not enough for you, do the following to start using [IDEA] with this project:
 
 1. Make sure that [SBT] is installed anyway
-2. Open [IDEA] and install [IDEA SBT plugin] from repositiories:
+2. Open [IDEA] and install [SBT plugin] and [Scala plugin] from repositories:
 
     1. Go to `File` > `Settings` > `Plugins`, click `Browse repositories...`
     2. Type `SBT` in the search field and double-click on the first result
+    2. Do the same with `Scala` keyword
     3. Click `Yes`, `Close`, `OK` to apply changes and agree to restart IDEA
     4. After restart go to `File` > `Settings` > `SBT` and fill in the path to `sbt-launch.jar` (should be in the installation dir of SBT, e.g. `C:\Program Files (x86)\sbt\sbt-launch.jar` for 64-bit Windows)
 
@@ -41,5 +44,6 @@ Run, then enter commands one by one. Enter `help` for the list of available comm
   [TTT]: http://ttt.lab9.ru
   [IDEA]: http://www.jetbrains.com/idea
   [SBT]: http://www.scala-sbt.org
-  [IDEA SBT plugin]: http://plugins.intellij.net/plugin?pluginId=5007
+  [SBT plugin]: http://plugins.intellij.net/plugin?pluginId=5007
+  [Scala plugin]: http://plugins.intellij.net/plugin/?id=1347
 
