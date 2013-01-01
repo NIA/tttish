@@ -2,7 +2,7 @@ package ru.moonlighters.tttish
 
 import collection.immutable.ListMap
 
-object ConsoleLoop {
+object ConsoleLoop extends Controller {
   private object LoopEnd extends Error
 
   def run() {
@@ -61,12 +61,21 @@ object ConsoleLoop {
   private val promptText = "ttt > "
 
   private def prompt: String = {
+    AccountController.currentUser match {
+      case Some(name) => print(userColor + name + defaultColor + " @ ")
+      case None =>
+    }
     print(promptText)
-    readLine()
+    var str = readLine()
+    if (str == null) {
+      println()
+      str = "exit"
+    }
+    str
   }
 
   private val helpTabStop = 8
   private val helpText = "Commands list:\n" + commands.map({
-    case (cmd, desc) => cmd + " "*(helpTabStop - cmd.length) + "- " + desc
+    case (cmd, Command(desc, _)) => cmd + " "*(helpTabStop - cmd.length) + "- " + desc
   }).mkString("\n")
 }

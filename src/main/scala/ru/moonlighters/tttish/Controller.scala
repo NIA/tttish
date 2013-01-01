@@ -20,4 +20,22 @@ trait Controller {
   private def protectiveDelay() {
     Thread.sleep(100)
   }
+
+  def printError(msg: String) {
+    println(errorColor + msg + defaultColor)
+  }
+
+  def printSuccess(msg: String) {
+    println(successColor + msg + defaultColor)
+  }
+
+  def printHightlight(msg: String) {
+    println(Console.BOLD + msg + Console.RESET)
+  }
+
+  val defaultColor = Console.WHITE + Console.RESET
+  val durationColor = Console.GREEN + Console.BOLD
+  val userColor = Console.BLUE + Console.BOLD
+  val errorColor = Console.RED
+  val successColor = Console.GREEN
 }

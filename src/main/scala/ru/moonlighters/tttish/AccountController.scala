@@ -14,15 +14,18 @@ object AccountController extends Controller {
 
     // If successful
     for (u <- userPromise.right) {
-      println("Logged in as " + u.nickname)
+      currentUser = Some(u.nickname)
+      printSuccess("Logged in as " + currentUser.get)
     }
 
     // If failed
     for (error <- userPromise.left) {
-      println("Login failed, try again: " + error.getMessage)
+      printError("Login failed, try again: " + error.getMessage)
     }
 
     // Wait till complete
     waitTillComplete(userPromise)
   }
+
+  var currentUser: Option[String] = None
 }

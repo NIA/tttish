@@ -19,7 +19,8 @@ object UpdatesController extends Controller {
 
     // If failed
     for (error <- updatesPromise.left) {
-      println("Failed to fetch updates: " + error.getMessage)
+      println()
+      printError("Failed to fetch updates: " + error.getMessage)
     }
 
     // Display waiting process
@@ -42,12 +43,12 @@ object UpdatesController extends Controller {
       case None => ""
     }
     val suffix = u.kind match {
-      case 'update => " - " + endTime + hours
+      case 'update => " - " + endTime + durationColor + hours + defaultColor
       case _ => ""
     }
     println()
     println(startDate.capitalize + " " + startTime + suffix)
-    println("@" + u.user.nickname + ": " + u.humanMessage)
+    println(userColor + "@" + u.user.nickname + defaultColor + ": " + u.humanMessage)
   }
 
   val dateFormat = "dd.MM.yyyy"

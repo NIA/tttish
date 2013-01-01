@@ -22,3 +22,11 @@ libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.2"
 libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.2"
 
 assemblySettings
+
+buildInfoSettings
+
+sourceGenerators in Compile <+= buildInfo
+
+buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion)
+
+buildInfoPackage := "ru.moonlighters.tttish"
