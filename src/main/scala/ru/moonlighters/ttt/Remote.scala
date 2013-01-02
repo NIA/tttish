@@ -28,7 +28,7 @@ object Remote {
   def login(apiKey: String) = {
     this.apiKey = apiKey
     for (res <- load("account.json").right)
-      yield parse(res).transform(transformUnderscored).extract[User]
+      yield extractObject[User](res)
   }
 
   /** Get the list of updates from server.
@@ -37,7 +37,7 @@ object Remote {
     */
   def getUpdates = {
     for (res <- load("updates.json").right)
-      yield parse(res).transform(transformUnderscored).extract[List[Update]]
+      yield extractObject[List[Update]](res)
   }
 
   val Underscored = "([a-z]+)_([a-z]+)".r
@@ -59,14 +59,28 @@ object Remote {
     } else {
       val ttt = url(baseUrl + urlSuffix).addQueryParameter("api_key", apiKey)
       val request = Http(ttt OK as.String).either
-      val replaced = for (res <- request.right)
-        yield res.replaceAll("([+-]\\d\\d):(\\d\\d)", "$1$2") // Convert timezones from +07:00 to +0700 since SimpleDateFormat doesn't understand the former
-      for (err <- replaced.left)
+      for (err <- request.left)
         yield err match {
           case StatusCode(401) => new AuthException(apiKey)
           case StatusCode(406) => new AuthException("")
           case x => x
         }
     }
+  }
+
+  /** Extract object of type A from JSON
+    *
+    * According to liftweb-json docs type A can be:
+    *   - case class
+    *   - primitive (String, Boolean, Date, etc.)
+    *   - supported collection type (List, Seq, Map[String, _], Set)
+    *   - any type which has a configured custom deserializer
+    * @tparam A the type to be extracted
+    * @param jsonString a JSON string to parse
+    * @return extracted object of type A
+    */
+  def extractObject[A](jsonString: String)(implicit mf: scala.reflect.Manifest[A]) = {
+    val replacedString = jsonString.replaceAll("([+-]\\d\\d):(\\d\\d)", "$1$2") // Convert timezones from +07:00 to +0700 since SimpleDateFormat doesn't understand the former
+    parse(replacedString).transform(transformUnderscored).extract[A]
   }
 }

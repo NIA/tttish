@@ -16,6 +16,8 @@ libraryDependencies += "org.scalaj"  %% "scalaj-time"  % "0.6"
 
 libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.9.5"
 
+libraryDependencies += "org.scalatest" %% "scalatest" % "1.8" % "test"
+
 // Next two are needed for dispatch
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.2"
 
