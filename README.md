@@ -1,6 +1,8 @@
 TTTish: The Time Tracker interactive shell
 ==========================================
 
+[![Build Status](https://travis-ci.org/NIA/tttish.png)](https://travis-ci.org/NIA/tttish)
+
 An interactive console client for [TTT]: The Time Tracker written in **Scala**.
 
 Build
