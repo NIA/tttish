@@ -39,9 +39,6 @@ object ConsoleLoop extends Controller {
 
   // TODO: move commands to the right place
   private val commands: Map[String, Command] = ListMap(
-    "login" -> Command("set current user api key: login <key>", { key =>
-      AccountController.login(key)
-    }),
     "updates" -> Command("show the last updates", { _ =>
       UpdatesController.showUpdates()
     }),
@@ -49,6 +46,12 @@ object ConsoleLoop extends Controller {
       // TODO: implement me
       assert(msg != null && msg.nonEmpty)
       println("... hard work of posting update with message \"%s\"..." format msg)
+    }),
+    "login" -> Command("set current user api key: login <key>", { key =>
+      AccountController.login(key)
+    }),
+    "config" -> Command("set", { fileName =>
+      loadSettings(fileName)
     }),
     "help" -> Command("that is, print this text", { _ =>
       println(helpText)

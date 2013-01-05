@@ -1,8 +1,26 @@
 package ru.moonlighters.tttish
 
 import dispatch.Promise
+import ru.moonlighters.ttt.Config
+import java.io.File
 
 trait Controller {
+
+  def loadSettings(fileName: String) {
+    val f = new File(fileName.trim)
+    if (f.canRead) {
+      println("Loading settings from '%s'..." format f.getAbsolutePath)
+      Config.load(f)
+    } else {
+      printError("No such file '%s'" format fileName)
+    }
+  }
+
+  /**
+   *  --  Helpers --
+   */
+
+
   def displayProgress[A](p: Promise[A]) {
     while(p.completeOption.isEmpty) {
       Thread.sleep(50)
@@ -29,13 +47,18 @@ trait Controller {
     println(successColor + msg + defaultColor)
   }
 
-  def printHightlight(msg: String) {
-    println(Console.BOLD + msg + Console.RESET)
+  def printHighlight(msg: String) {
+    println(highlightColor + msg + defaultColor)
   }
 
-  val defaultColor = Console.WHITE + Console.RESET
-  val durationColor = Console.GREEN + Console.BOLD
-  val userColor = Console.BLUE + Console.BOLD
-  val errorColor = Console.RED
-  val successColor = Console.GREEN
+  // FIXME: need to somehow convert java.lang.Boolean to scala.Boolean when parsing yaml to avoid this
+  def colorsEnabled:Boolean = Config[java.lang.Boolean]("tttish", "color") map { _.booleanValue() } getOrElse false
+  def _col(col: String) = if (colorsEnabled) col else ""
+
+  def defaultColor = _col(Console.WHITE + Console.RESET)
+  def highlightColor = _col(Console.WHITE + Console.BOLD)
+  def durationColor = _col(Console.GREEN + Console.BOLD)
+  def userColor = _col(Console.BLUE + Console.BOLD)
+  def errorColor = _col(Console.RED)
+  def successColor = _col(Console.GREEN)
 }

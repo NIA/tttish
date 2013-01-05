@@ -21,6 +21,7 @@ object AccountController extends Controller {
     // If failed
     for (error <- userPromise.left) {
       printError("Login failed, try again: " + error.getMessage)
+      currentUser = None
     }
 
     // Wait till complete

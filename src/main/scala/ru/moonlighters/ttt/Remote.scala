@@ -4,6 +4,7 @@ import java.util.Date
 import net.liftweb.json._
 import org.scala_tools.time.Imports._
 import dispatch._
+import java.net.ConnectException
 
 object Remote {
   case class User(nickname: String, name: String)
@@ -18,7 +19,7 @@ object Remote {
     }
   }
 
-  val baseUrl = "http://ttt.lab9.ru/" // TODO: configurable
+  def baseUrl = Config[String]("site", "base_url").getOrElse("empty")
 
   var apiKey = ""
   /** Set current api key and enable network operations.
@@ -57,12 +58,14 @@ object Remote {
     if (apiKey.isEmpty) {
       Http.promise(Left(new AuthException(apiKey)))
     } else {
-      val ttt = url(baseUrl + urlSuffix).addQueryParameter("api_key", apiKey)
+      val ttt = url(baseUrl + "/" + urlSuffix).addQueryParameter("api_key", apiKey)
       val request = Http(ttt OK as.String).either
       for (err <- request.left)
         yield err match {
           case StatusCode(401) => new AuthException(apiKey)
           case StatusCode(406) => new AuthException("")
+          // Java's ConnectException default message if address is not resolved is simply the address, no explanation
+          case x:ConnectException => new ConnectException("Failed to connect to " + x.getMessage)
           case x => x
         }
     }
