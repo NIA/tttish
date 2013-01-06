@@ -41,13 +41,16 @@ If your IDE is not [IDEA]... Well, have fun ;) Try googling for "%yourIDE% sbt i
 Usage
 -----
 
+Place your `.tttrc` file (e.g. downloaded from [Account] page) in your home dir or working dir of this app.
+
 Run, then enter commands one by one. Enter `help` for the list of available commands.
 
-In current version you have to use `login` command to login first. Support of `.tttrc` config files is planned.
+You can use `login` command to login if you do not provide `.tttrc` or it doesn't contain your api key.
 
   [TTT]: http://ttt.lab9.ru
   [IDEA]: http://www.jetbrains.com/idea
   [SBT]: http://www.scala-sbt.org
   [SBT plugin]: http://plugins.intellij.net/plugin?pluginId=5007
   [Scala plugin]: http://plugins.intellij.net/plugin/?id=1347
+  [Account]: http://ttt.lab9.ru/account
 

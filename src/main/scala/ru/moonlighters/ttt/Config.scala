@@ -73,16 +73,16 @@ object Config {
     = _get[java.lang.Integer](current, keys) map Integer2int
 
   def apply[T <: Boolean](keys: String*)(implicit ev: T =:= Boolean, void: VoidB): Option[Boolean]
-  = _get[java.lang.Boolean](current, keys) map Boolean2boolean
+   = _get[java.lang.Boolean](current, keys) map Boolean2boolean
 
   def apply[T <: Long](keys: String*)(implicit ev: T =:= Long, void: VoidL): Option[Long]
-  = _get[java.lang.Long](current, keys) map Long2long
+   = _get[java.lang.Long](current, keys) map Long2long
 
   def apply[T <: Float](keys: String*)(implicit ev: T =:= Float, void: VoidF): Option[Float]
-  = _get[java.lang.Float](current, keys) map Float2float
+   = _get[java.lang.Float](current, keys) map Float2float
 
   def apply[T <: Double](keys: String*)(implicit ev: T =:= Double, void: VoidD): Option[Double]
-  = _get[java.lang.Double](current, keys) map Double2double
+   = _get[java.lang.Double](current, keys) map Double2double
 
   class VoidI; class VoidB; class VoidL; class VoidF; class VoidD
   implicit val voidI = new VoidI; implicit val voidB = new VoidB; implicit val voidL = new VoidL; implicit val voidF = new VoidF; implicit val voidD = new VoidD
