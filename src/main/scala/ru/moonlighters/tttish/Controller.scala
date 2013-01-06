@@ -51,8 +51,7 @@ trait Controller {
     println(highlightColor + msg + defaultColor)
   }
 
-  // FIXME: need to somehow convert java.lang.Boolean to scala.Boolean when parsing yaml to avoid this
-  def colorsEnabled:Boolean = Config[java.lang.Boolean]("tttish", "color") map { _.booleanValue() } getOrElse false
+  def colorsEnabled:Boolean = Config[Boolean]("tttish", "color") getOrElse false
   def _col(col: String) = if (colorsEnabled) col else ""
 
   def defaultColor = _col(Console.WHITE + Console.RESET)

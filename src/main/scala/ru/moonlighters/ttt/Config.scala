@@ -23,7 +23,7 @@ object Config {
    */
   def init(extraConfigFiles: Seq[String] = Seq()) {
     reset(defaults)
-    (configFiles ++ extraConfigFiles) map { new File(_) } filter { _.canRead } foreach { load(_) }
+    (configFiles ++ extraConfigFiles) map { new File(_) } filter { _.canRead } foreach load
   }
 
   /**
@@ -60,20 +60,40 @@ object Config {
    * @tparam T the required type of the value
    * @return Some(value) from map if it is found and has type A, otherwise None
    */
-  def apply[T](keys: String*)(implicit mf: ClassManifest[T]):Option[T] = {
-    if (keys.isEmpty) {
-      None
-    } else {
-      _get[T](current, keys)
-    }
-  }
+  def apply[T <: AnyRef](keys: String*)(implicit mf: ClassManifest[T]): Option[T] = _get[T](current, keys)
+
+  /**
+   * HACK: The following is a way to emulate partial template specialization. The following functions would not
+   * compile if they had similar signature after type erasure (Option[Int] and Option[Boolean] both become simply Option)
+   * To work around this we add nominal implicit parameters of different type to each function
+   * and define implicit values for them below. This doesn't affect invoking anyway: Config[Int]("category", "key")
+   */
+
+  def apply[T <: Int](keys: String*)(implicit ev: T =:= Int, void: VoidI): Option[Int]
+    = _get[java.lang.Integer](current, keys) map Integer2int
+
+  def apply[T <: Boolean](keys: String*)(implicit ev: T =:= Boolean, void: VoidB): Option[Boolean]
+  = _get[java.lang.Boolean](current, keys) map Boolean2boolean
+
+  def apply[T <: Long](keys: String*)(implicit ev: T =:= Long, void: VoidL): Option[Long]
+  = _get[java.lang.Long](current, keys) map Long2long
+
+  def apply[T <: Float](keys: String*)(implicit ev: T =:= Float, void: VoidF): Option[Float]
+  = _get[java.lang.Float](current, keys) map Float2float
+
+  def apply[T <: Double](keys: String*)(implicit ev: T =:= Double, void: VoidD): Option[Double]
+  = _get[java.lang.Double](current, keys) map Double2double
+
+  class VoidI; class VoidB; class VoidL; class VoidF; class VoidD
+  implicit val voidI = new VoidI; implicit val voidB = new VoidB; implicit val voidL = new VoidL; implicit val voidF = new VoidF; implicit val voidD = new VoidD
 
   /*
     Internal recursive worker for apply
    */
-  def _get[T](map: SettingsMap, keys: Seq[String])(implicit mf: ClassManifest[T]):Option[T] = {
+  def _get[T](map: SettingsMap, keys: Seq[String])(implicit mf: ClassManifest[T]): Option[T] = {
     val classT = mf.erasure
-    if (map.contains(keys.head)) {
+
+    if (keys.nonEmpty && map.contains(keys.head)) {
       keys match {
         // We cannot do .isInstanceOf[T] due to type erasure, so we use isAssignableFrom on its class objects
         case Seq(lastKey) if classT isAssignableFrom map(lastKey).getClass =>
@@ -163,12 +183,9 @@ object Config {
   def deepMergeSettings(orig: SettingsMap, latter: SettingsMap): SettingsMap = {
     (orig ++ latter) map { case(key, value) =>
       if (orig.contains(key)) {
-        val conflictValues = Seq(orig(key), value)
-        if ( conflictValues forall { _.isInstanceOf[SettingsMap] }) {
-          val maps = conflictValues map { _.asInstanceOf[SettingsMap] }
-          key -> deepMergeSettings(maps(0), maps(1))
-        } else {
-          key -> value
+        (orig(key), value) match {
+          case (origMap: SettingsMap, newMap: SettingsMap) => key -> deepMergeSettings(origMap, newMap)
+          case (origValue, newValue) => key -> newValue
         }
       } else {
         key -> value
@@ -184,12 +201,9 @@ object Config {
    * @return jmap converted to "scala map"
    */
   def deepMapAsSettingsMap(jmap: JavaMap): SettingsMap = {
-    mapAsScalaMap(jmap).toMap mapValues  { value =>
-      if (value.isInstanceOf[JavaMap]) {
-        deepMapAsSettingsMap(value.asInstanceOf[JavaMap])
-      } else {
-        value
-      }
-    }
+    mapAsScalaMap(jmap).toMap mapValues  { _ match {
+      case jmap: JavaMap => deepMapAsSettingsMap(jmap)
+      case value => value
+    }}
   }
 }

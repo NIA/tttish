@@ -18,16 +18,6 @@ class SettingsMapSpec extends FlatSpec with ShouldMatchers {
     deepMapAsSettingsMap(map1) should equal (Map("alpha" -> "aaa", "beta" -> 222))
   }
 
-  it should "convert java booleans to scala booleans" in (pending)
-  /*{
-    val jmap = JMap("t" -> java.lang.Boolean.TRUE, "f" -> java.lang.Boolean.FALSE)
-
-    val map = deepMapAsSettingsMap(jmap)
-    map should equal (Map("t" -> true, "f" -> false))
-    map("t").getClass should be (classOf[Boolean])
-    map("f").getClass should not be (classOf[java.lang.Boolean])
-  }*/
-
   it should "convert 2-level map to 2-level map" in {
     val map2 =
       JMap("brother" -> JMap("alpha" -> "aaa", "beta" -> 222),

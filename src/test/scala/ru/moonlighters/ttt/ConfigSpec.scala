@@ -44,4 +44,13 @@ class ConfigSpec extends FlatSpec with ShouldMatchers{
     Config[String]("key", "subkey", "garbage") should be (None)
     Config[String]("garbage", "garbage", "garbage") should be (None)
   }
+
+  it should "unbox value types" in {
+    Config reset Map("int" -> 5, "bool" -> true, "long" -> 1000000000000L, "float" -> 2.5F, "double" -> 1e-250)
+    Config[Int]("int") should be (Some(5))
+    Config[Boolean]("bool") should be (Some(true))
+    Config[Long]("long") should be (Some(1000000000000L))
+    Config[Float]("float") should be (Some(2.5F))
+    Config[Double]("double") should be (Some(1e-250))
+  }
 }
